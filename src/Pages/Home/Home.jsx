@@ -1,12 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { GridPokemon, Main, Bar, DropdownContainer, DropdownContent, Poke } from "../../Styles/components/MainStyles";
+import {
+    GridPokemon,
+    Main,
+    Bar,
+    DropdownContainer,
+    DropdownContent,
+    Poke,
+} from "../../Styles/components/MainStyles";
 import { CardPokemon } from "../../components/Card/Card";
 import { ButtonLoadMore } from "../../components/Buttons/ButtonLoadMore";
 import { DropdownToggle } from "../../components/Buttons/ButtonDropdownToggle";
 import { ClearFiltersButton } from "../../components/Buttons/ButtonClearFilters";
-import { DropdownOptions } from "../../components/SelectOptionsPokemon/SelectOptionsPokemon"
+import { DropdownOptions } from "../../components/SelectOptionsPokemon/SelectOptionsPokemon";
 import { HeaderPage } from "../../components/HeaderPage/HeaderPage";
 import { ThemeTogglerButton } from "../../components/ThemeTogglerButton/ThemeTogglerButton";
+import {
+    getPokemonList,
+    getPokemonTypes,
+    getPokemonsByType,
+} from "../../services/PokemonServices";
 
 export const Home = () => {
     const [listPokemon, setListPokemon] = useState([]);
@@ -15,57 +27,74 @@ export const Home = () => {
     const [selectedTypes, setSelectedTypes] = useState([]);
     const [pokemonTypes, setPokemonTypes] = useState([]);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [loadedCountByType, setLoadedCountByType] = useState({});
 
     useEffect(() => {
         const fetchTypes = async () => {
-            try {
-                const response = await fetch("https://pokeapi.co/api/v2/type");
-                const data = await response.json();
-                const filteredTypes = data.results.filter(
-                    (type) => type.name !== "shadow" && type.name !== "unknown"
-                );
-                setPokemonTypes(filteredTypes);
-            } catch (error) {
-                console.error("Error fetching types:", error);
-            }
+            const types = await getPokemonTypes();
+            setPokemonTypes(types);
         };
-
         fetchTypes();
     }, []);
-
-    const SearchPokemon = async (url) => {
-        setLoading(true);
-        try {
-            const response = await fetch(url);
-            const data = await response.json();
-
-            setNextUrl(data.next);
-
-            const detailsPokemon = await Promise.all(
-                data.results.map(async (pokemon) => {
-                    const resp = await fetch(pokemon.url);
-                    return await resp.json();
-                })
-            );
-
-            setListPokemon((prev) => {
-                const existingIds = new Set(prev.map((p) => p.id));
-                const newPokemons = detailsPokemon.filter((p) => !existingIds.has(p.id));
-                return [...prev, ...newPokemons];
-            });
-        } catch (error) {
-            console.error("Error fetching Pokémon:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     useEffect(() => {
         SearchPokemon("https://pokeapi.co/api/v2/pokemon?limit=10");
     }, []);
 
+    useEffect(() => {
+        setListPokemon([]);
+        setLoadedCountByType({});
+        if (selectedTypes.length === 0) {
+            SearchPokemon("https://pokeapi.co/api/v2/pokemon?limit=10");
+        } else {
+            fetchPokemonsBySelectedTypes(false);
+        }
+    }, [selectedTypes]);
+
+    const SearchPokemon = async (url) => {
+        setLoading(true);
+        const { next, pokemons } = await getPokemonList(url);
+        setNextUrl(next);
+        setListPokemon((prev) => {
+            const existingIds = new Set(prev.map((p) => p.id));
+            const newPokemons = pokemons.filter((p) => !existingIds.has(p.id));
+            return [...prev, ...newPokemons];
+        });
+        setLoading(false);
+    };
+
+    const fetchPokemonsBySelectedTypes = async (loadMore = false) => {
+        setLoading(true);
+        const perTypeLimit = 10;
+        const newLoadedCountByType = { ...loadedCountByType };
+        let allFetchedPokemons = [];
+
+        for (const type of selectedTypes) {
+            const alreadyLoaded = loadMore ? (loadedCountByType[type] || 0) : 0;
+            const fetched = await getPokemonsByType(type, alreadyLoaded, perTypeLimit);
+
+            newLoadedCountByType[type] = alreadyLoaded + fetched.length;
+            allFetchedPokemons.push(...fetched);
+        }
+
+        setLoadedCountByType(newLoadedCountByType);
+
+        setListPokemon((prev) => {
+            const existingIds = new Set(prev.map((p) => p.id));
+            const filteredNew = allFetchedPokemons.filter(
+                (p) => !existingIds.has(p.id)
+            );
+            return loadMore ? [...prev, ...filteredNew] : filteredNew;
+        });
+
+        setLoading(false);
+    };
+
     const LoadMore = () => {
-        if (nextUrl) {
+        if (loading) return;
+        if (selectedTypes.length > 0) {
+            fetchPokemonsBySelectedTypes(true);
+        } else if (nextUrl) {
             SearchPokemon(nextUrl);
         }
     };
@@ -86,11 +115,9 @@ export const Home = () => {
 
     return (
         <Main>
-            
             <HeaderPage />
 
             <Poke>
-
                 <GridPokemon>
                     {filteredPokemon.map((pokemon) => (
                         <CardPokemon key={pokemon.id} pokemon={pokemon} />
@@ -98,36 +125,42 @@ export const Home = () => {
                 </GridPokemon>
 
                 <DropdownContainer>
-                <DropdownToggle
-                    selectedCount={selectedTypes.length}
-                    onClick={() => setIsDropdownOpen((prev) => !prev)}
-                />
+                    <DropdownToggle
+                        selectedCount={selectedTypes.length}
+                        onClick={() => setIsDropdownOpen((prev) => !prev)}
+                    />
 
-                {isDropdownOpen && (
-                    <DropdownContent>
-                        <DropdownOptions
-                            pokemonTypes={pokemonTypes}
-                            selectedTypes={selectedTypes}
-                            handleTypeChange={handleTypeChange}
-                        />
+                    {isDropdownOpen && (
+                        <DropdownContent>
+                            <DropdownOptions
+                                pokemonTypes={pokemonTypes}
+                                selectedTypes={selectedTypes}
+                                handleTypeChange={handleTypeChange}
+                            />
 
-                        {selectedTypes.length > 0 && (
-                            <ClearFiltersButton onClear={() => setSelectedTypes([])} />
-                        )}
-                    </DropdownContent>
-                )}
-            </DropdownContainer>
-
+                            {selectedTypes.length > 0 && (
+                                <ClearFiltersButton
+                                    onClear={() => {
+                                        setSelectedTypes([]);
+                                        setListPokemon([]);
+                                        setLoadedCountByType({});
+                                        SearchPokemon("https://pokeapi.co/api/v2/pokemon?limit=10");
+                                    }}
+                                />
+                            )}
+                        </DropdownContent>
+                    )}
+                </DropdownContainer>
             </Poke>
 
             {loading ? (
                 <div>Loading...</div>
             ) : (
-                nextUrl && (
-                    <div style={{ height: '40px' }}>
+                <div style={{ height: "40px" }}>
+                    {(selectedTypes.length > 0 || nextUrl) && (
                         <ButtonLoadMore onClick={LoadMore}>Load more</ButtonLoadMore>
-                    </div>
-                )
+                    )}
+                </div>
             )}
 
             <Bar />

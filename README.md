@@ -26,15 +26,16 @@ O objetivo principal é **acadêmico**, como parte de um exercício proposto dur
   - Lista inicial com **10 Pokémons**.
   - **Botão "Load more"** para carregar mais 10 Pokémons por clique.
   - **Filtro por tipo de Pokémon:**
-    - Dropdown permite selecionar um ou mais tipos de Pokémon (ex.: Fire, Water).
-    - Exibe somente Pokémons já carregados daquele tipo.
-    - Se o tipo ainda não estiver listado, o usuário pode carregar mais até o tipo desejado aparecer.
+  - Dropdown permite selecionar um ou mais tipos de Pokémon (ex.: Fire, Water).
+  - Ao selecionar um ou mais tipos, a aplicação já carrega automaticamente **10 Pokémons de cada tipo selecionado**, mesmo que eles ainda não estivessem previamente listados.
+  - O usuário pode continuar carregando mais Pokémons daquele tipo clicando em **"Load More"**.
+  - Permite combinação de múltiplos tipos ao mesmo tempo.
   - **Botão "Clear Filters" (Limpar filtros):**
     - Só aparece quando um filtro estiver aplicado.
   - **Botão de troca de tema (light/dark).**
 
 - **Página de Detalhes de um Pokémon:**
-  - Exibe detalhes como nome, Habilidades, movimentos e tipos do Pokémon selecionado.
+  - Exibe detalhes como: Nome, Habilidades, Movimentos e Tipos do Pokémon selecionado.
   - Lista inicial de **20 movimentos (moves)** do Pokémon.
   - **Botão "Load more"** para carregar mais movimentos, caso disponíveis.
 
@@ -42,7 +43,7 @@ O objetivo principal é **acadêmico**, como parte de um exercício proposto dur
 
 - Testes unitários com Jest e React Testing Library.
 - Componentes reutilizáveis organizados por pastas (ex.: botões, cabeçalho).
-- Filtro dinâmico por tipo de Pokémon.
+- Filtro dinâmico por tipo de Pokémon com **carregamento automático ao selecionar**.
 - Tema com Context API e troca visual em tempo real.
 
 ---
