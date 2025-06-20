@@ -1,7 +1,26 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Main } from "../../Styles/components/MainStyles";
-import { ContainerDetails, Header, ImgPokemons, SectionInfo, NamePokemons, TypeBadge, Section, TitleSection, ItemSkill, NameSkill, DescriptionSkill, MoveList, ItemMove } from "../../Styles/components/DetailsStyles";
+import { 
+    ContainerDetails, 
+    Header, 
+    ImgPokemons, 
+    SectionInfo, 
+    NamePokemons, 
+    TypeBadge, 
+    Section, 
+    TitleSection, 
+    ItemSkill, 
+    NameSkill, 
+    DescriptionSkill, 
+    MoveList, 
+    ItemMove,
+    StatsContainer,
+    StatBlock,
+    StatName,
+    StatValue,
+    InfoDetails
+} from "../../Styles/components/DetailsStyles";
 import { StyledLinkHome } from "../../Styles/components/LinkStyles"
 import { TypesColors } from "../../Styles/TypeColors";
 import { Button } from "../../Styles/components/ButtonStyles";
@@ -57,20 +76,30 @@ export const DetailsPokemon = () => {
                         alt={pokemon.name}
                     />
 
-                    <SectionInfo>
-                        <NamePokemons>{pokemon.name}</NamePokemons>
+                    <InfoDetails>
+                        <SectionInfo>
+                            <NamePokemons>{pokemon.name}</NamePokemons>
 
-                        <div>
-                            {pokemon.types.map((type) => (
-                                <TypeBadge
-                                    key={type.slot}
-                                    $cor={TypesColors[type.type.name]}
-                                >
-                                    {type.type.name}
-                                </TypeBadge>
+                            <div>
+                                {pokemon.types.map((type) => (
+                                    <TypeBadge
+                                        key={type.slot}
+                                        $cor={TypesColors[type.type.name]}
+                                    >
+                                        {type.type.name}
+                                    </TypeBadge>
+                                ))}
+                            </div>
+                        </SectionInfo>
+                        <StatsContainer>
+                            {pokemon.stats.map((stat) => (
+                                <StatBlock key={stat.stat.name}>
+                                    <StatName>{stat.stat.name.replace("-", " ")}</StatName>
+                                    <StatValue>{stat.base_stat}</StatValue>
+                                </StatBlock>
                             ))}
-                        </div>
-                    </SectionInfo>
+                        </StatsContainer>
+                    </InfoDetails>
                 </Header>
 
                 <Section>

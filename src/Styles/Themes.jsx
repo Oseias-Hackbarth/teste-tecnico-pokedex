@@ -3,7 +3,7 @@ export const themes = {
     color: "#4A90E2",
     background: "#FF4C4C",
     backgroundCard: "#D3D3D3",
-    backgroundBottonCard: "#D3d",
+    backgroundBottonCard: "#FFA500",
     colorName: "#000000",
     hoverColor: "#003366",
   },
