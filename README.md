@@ -35,9 +35,12 @@ O objetivo principal é **acadêmico**, como parte de um exercício proposto dur
   - **Botão de troca de tema (light/dark).**
 
 - **Página de Detalhes de um Pokémon:**
-  - Exibe detalhes como: Nome, Habilidades, Movimentos e Tipos do Pokémon selecionado.
-  - Lista inicial de **20 movimentos (moves)** do Pokémon.
-  - **Botão "Load more"** para carregar mais movimentos, caso disponíveis.
+  - Exibe informações detalhadas como:
+    - Nome
+    - Tipos
+    - Habilidades
+    - Movimentos (com lista inicial de 20 movimentos e botão **"Load More"** para carregar mais)
+    - **Status base (stats)**: Incluindo **HP**, **Ataque**, **Defesa**, **Ataque Especial**, **Defesa Especial** e **Velocidade**
 
 ### Funcionalidades Extras
 
