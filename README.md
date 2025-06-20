@@ -82,6 +82,14 @@ As tecnologias foram indicadas no enunciado do desafio, mas também escolhidas p
   - Segui boas práticas de separação por responsabilidade.
   - A estruturação facilita manutenção, escalabilidade e leitura do código.
 
+- **Decisão sobre serviços (API):**
+
+  - Para centralizar e organizar todas as chamadas à PokéAPI, foi criada a pasta /src/services.
+
+  - Dentro dela estão funções responsáveis por buscar Pokémons, tipos e detalhes.
+
+  - Essa separação ajuda a deixar os componentes focados apenas na renderização e na lógica de interface, enquanto as requisições externas ficam isoladas.
+
 ---
 
 ## 📂 5. Estrutura de Pastas (Resumo)
@@ -90,6 +98,7 @@ As tecnologias foram indicadas no enunciado do desafio, mas também escolhidas p
 - /components → Componentes reutilizáveis (Botões, Header, etc)
 - /context → Context API para o tema
 - /pages → Páginas principais (Home, Detalhes)
+- /services → Arquivos responsáveis pelas requisições à PokéAPI
 - /Styles → Styled-components centralizados
 - /tests → Testes unitários (se houver mais separados)
 - jest.config.js → Configuração do Jest
