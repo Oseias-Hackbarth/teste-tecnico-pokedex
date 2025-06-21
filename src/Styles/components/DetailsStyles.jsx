@@ -126,8 +126,8 @@ export const StatsContainer = styled.div`
 `;
 
 export const StatBlock = styled.div`
-  min-width: 120px;
-  max-width: 150px;
+  min-width: 100px;
+  max-width: 120px;
   padding: 10px;
   border-radius: 12px;
   text-align: center;
@@ -136,7 +136,6 @@ export const StatBlock = styled.div`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   background-color: ${(props) => props.theme.backgroundBottonCard};
   word-wrap: break-word;
-
 `;
 
 export const StatName = styled.span`
@@ -144,7 +143,6 @@ export const StatName = styled.span`
   font-size: 14px;
   text-transform: capitalize;
   margin-bottom: 5px;
-  white-space: nowrap;
 `;
 
 export const StatValue = styled.span`

@@ -12,7 +12,7 @@ export const getPokemonList = async (url) => {
 
         return { next: data.next, pokemons: detailsPokemon };
     } catch (error) {
-        console.error("Erro ao buscar pokemons:", error);
+        console.error("Error searching for pokemons:", error);
         return { next: null, pokemons: [] };
     }
 };
@@ -29,7 +29,7 @@ export const getPokemonTypes = async () => {
 
         return filteredTypes;
     } catch (error) {
-        console.error("Erro ao buscar tipos:", error);
+        console.error("Error fetching types:", error);
         return [];
     }
 };
